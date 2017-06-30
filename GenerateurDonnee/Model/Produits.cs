@@ -16,5 +16,6 @@ namespace GenerateurDonnee
         public int Gelifiants { get; set; }
         public string Nom { get; set; }
         public int Sucre { get; set; }
+        public int Coef { get; set; }
     }
 }
