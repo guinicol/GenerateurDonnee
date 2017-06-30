@@ -16,6 +16,9 @@ namespace GenerateurDonnee
 
         public DateTime Date { get; set; }
 
+        public int Etat { get; set; }
+        public DateTime DateExpedition { get; set; }
+
         public ICollection<LignesCommande> LignesCommandes { get; set; }
     }
 }

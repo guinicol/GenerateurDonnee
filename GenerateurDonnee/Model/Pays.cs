@@ -8,5 +8,6 @@ namespace GenerateurDonnee
         public int Id { get; set; }
         public int IdTransports { get; set; }
         public string Nom { get; set; }
+        public int Coef { get; set; }
     }
 }

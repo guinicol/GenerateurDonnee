@@ -18,15 +18,15 @@ namespace GenerateurDonnee
         }
         public void Execute()
         {
-            randomiser.Date.AddSeconds(1);
+            randomiser.Date=randomiser.Date.AddSeconds(1);
             if (timer == 0)
             {
                 var Commande = randomiser.GetCommande();
                 Context.Add(Commande);
                 Context.SaveChanges();
                 var random = new Random();
-                //timer = random.Next(300,900);
-                timer = random.Next(30, 120);
+                timer = random.Next(300, 900);
+                //timer = random.Next(30, 120);
                 Console.WriteLine("Commande Effectué à " + Commande.Date + ", " + Commande.LignesCommandes.Count + " lignes, prochaine commande dans " + timer +"s");
             }
             timer--;

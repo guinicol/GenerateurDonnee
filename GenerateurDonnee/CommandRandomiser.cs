@@ -42,7 +42,7 @@ namespace GenerateurDonnee
         {
             var random = new Random();
             var i = random.Next(1, 2);
-            var cond = Context.Conditionnements.Where((x)=> x.Id==i).First();
+            var cond = Context.Conditionnements.Where((x) => x.Id == i).First();
             i = random.Next(1, Context.Textures.Count());
             var text = Context.Textures.Where((x) => x.Id == i).First();
             i = random.Next(1, Context.Variantes.Count());
@@ -52,10 +52,10 @@ namespace GenerateurDonnee
 
             var prod = GetProduits(list);
 
-            return Context.References.Where((x) => x.IdConditionnements == cond.Id 
-            && x.IdCouleurs == col.Id 
-            && x.IdTextures == text.Id 
-            && x.IdVariantes == variante.Id 
+            return Context.References.Where((x) => x.IdConditionnements == cond.Id
+            && x.IdCouleurs == col.Id
+            && x.IdTextures == text.Id
+            && x.IdVariantes == variante.Id
             && x.IdProduits == prod.Id).First();
 
         }
@@ -81,9 +81,18 @@ namespace GenerateurDonnee
 
         private Pays GetPays()
         {
+            var listPays = Context.Pays.Where((x) => true).ToList();
+            var listCoef = new List<int>();
+            foreach (var item in listPays)
+            {
+                for (int i = 0; i < item.Coef; i++)
+                {
+                    listCoef.Add(item.Id);
+                }
+            }
             var random = new Random();
-            var i = random.Next(1, Context.Pays.Count());
-            return Context.Pays.Where((x) => x.Id == i).First();
+            var y = random.Next(0, listCoef.Count - 1);
+            return listPays.Where((x) => x.Id == listCoef[y]).First();
 
 
         }

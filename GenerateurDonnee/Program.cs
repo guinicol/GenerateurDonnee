@@ -8,7 +8,7 @@ namespace GenerateurDonnee
     {
         private List<IAction> Actions;
         private projetbiContext Context;
-        private const int timer = 1000;
+        private const int timer = 10;
         static void Main(string[] args)
         {
             var program = new Program();
