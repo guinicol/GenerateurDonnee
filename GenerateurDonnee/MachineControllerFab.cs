@@ -12,6 +12,8 @@ namespace GenerateurDonnee
         public event LigneCommandeProduced LigneCommandeProduced;
         public List<MachineFab> Machines { get; set; }
         private projetbiContext context;
+
+        private int compteurVerifCommande = 0;
         public MachineControllerFab(projetbiContext context)
         {
             this.context = context;
@@ -56,36 +58,50 @@ namespace GenerateurDonnee
 
         public void Execute()
         {
-            var lignesCommande = context.LignesCommande
-                .Include((x)=> x.References)
-                .Include((x)=>x.References.Variantes)
-                .Where((x) => x.Etat == 1).ToList();
-            foreach (var item in lignesCommande)
+            if (compteurVerifCommande == 0)
             {
-                foreach (var machine in Machines)
-                {
-                    if (!machine.InProduction && machine.Variante.Equals(item.References.Variantes.Nom))
-                    {
-                        machine.AddBonbons(item);
-                        item.Etat++;
-                        Console.WriteLine("Référence " + item.References.Produits.Nom + " " + item.References.Variantes.Nom + " fabriqué dans " + machine.Nom);
-                    }
-                }
-                if (item.Etat == 1)
+                var lignesCommande = context.LignesCommande
+                    .Include((x)=>x.Commandes)
+                    .Include((x) => x.References)
+                    .Include((x) => x.References.Variantes)
+                    .Include((x) => x.References.Conditionnements)
+                    .Where((x) => x.Etat == 1).ToList();
+                foreach (var item in lignesCommande)
                 {
                     foreach (var machine in Machines)
                     {
-                        if (machine.Variante.Equals(item.References.Variantes.Nom))
+                        if (!machine.InProduction && machine.Variante.Equals(item.References.Variantes.Nom))
                         {
                             machine.AddBonbons(item);
-                            item.Etat++;
-                            Console.WriteLine("Référence " + item.References.Produits.Nom + " " + item.References.Variantes.Nom + " en attente dans " + machine.Nom);
-
+                            item.Etat = 2;
+                            item.Commandes.Etat = 2;
+                            Console.WriteLine("Référence " + item.References.Produits.Nom + " " + item.References.Variantes.Nom + " fabriqué dans " + machine.Nom);
+                            break;
+                        }
+                    }
+                    if (item.Etat == 1)
+                    {
+                        foreach (var machine in Machines)
+                        {
+                            if (machine.Variante.Equals(item.References.Variantes.Nom))
+                            {
+                                machine.AddBonbons(item);
+                                item.Etat = 2;
+                                item.Commandes.Etat = 2;
+                                Console.WriteLine("Référence " + item.References.Produits.Nom + " " + item.References.Variantes.Nom + " en attente dans " + machine.Nom);
+                                break;
+                            }
                         }
                     }
                 }
+                context.SaveChanges();
+                compteurVerifCommande = 60;
             }
-            context.SaveChanges();
+            else
+            {
+                compteurVerifCommande--;
+            }
+
             foreach (var item in Machines)
             {
                 item.Execute();
@@ -95,7 +111,7 @@ namespace GenerateurDonnee
         private void BonbonsProducedHandler(Bonbon bonbon)
         {
             Console.WriteLine("Commande " + bonbon.Commande.Id + " Reference " + bonbon.Commande.IdReferences + " produite");
-            bonbon.Commande.Etat++;
+            bonbon.Commande.Etat = 3;
             context.SaveChanges();
         }
     }

@@ -87,9 +87,10 @@ namespace GenerateurDonnee
             {
                 Commande = item,
                 Reference = item.References,
-                Quantite = item.Quantite,
-                Compteur = item.Quantite * 3600 / Cadence 
+                Quantite = item.Quantite*item.References.Conditionnements.Quantite,
+                
             };
+            bonbon.Compteur = bonbon.Quantite * 3600 / Cadence;
             Bonbons.Add(bonbon);
             InProduction = true;
         }

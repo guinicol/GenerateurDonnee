@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 
 namespace GenerateurDonnee
@@ -16,7 +17,16 @@ namespace GenerateurDonnee
         static public DateTime Date { get; set; }
         static void Main(string[] args)
         {
-            Date = DateTime.Now;
+            if (File.Exists("date.txt"))
+            {
+                var reader = new StreamReader(new FileStream("date.txt", FileMode.Open));
+                Date = DateTime.Parse(reader.ReadLine());
+
+            }
+            else
+            {
+                Date = DateTime.Now;
+            }
             var program = new Program();
 
         }
@@ -29,7 +39,6 @@ namespace GenerateurDonnee
             Actions.Add(CommandCtrl);
             var UsineCtrl = new Usine(Context);
             Actions.Add(UsineCtrl);
-
             while (true)
             {
                 Date = Date.AddSeconds(1);
