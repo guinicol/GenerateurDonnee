@@ -16,5 +16,7 @@ namespace GenerateurDonnee
         public int IdReferences { get; set; }
         public References References { get; set; }
         public int Quantite { get; set; }
+
+        public int Etat { get; set; }
     }
 }

@@ -14,11 +14,9 @@ namespace GenerateurDonnee
         {
             this.Context = Context;
             randomiser = new CommandRandomiser() { Context = Context };
-            randomiser.Date = DateTime.Now;
         }
         public void Execute()
         {
-            randomiser.Date=randomiser.Date.AddSeconds(1);
             if (timer == 0)
             {
                 var Commande = randomiser.GetCommande();

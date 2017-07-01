@@ -8,9 +8,15 @@ namespace GenerateurDonnee
     {
         private List<IAction> Actions;
         private projetbiContext Context;
-        private const int timer = 10;
+        private const int timer = 5;
+
+        /// <summary>
+        /// Heure actuelle dans le Programme (à utiliser pour les enregistrements : Accélère le temps)
+        /// </summary>
+        static public DateTime Date { get; set; }
         static void Main(string[] args)
         {
+            Date = DateTime.Now;
             var program = new Program();
 
         }
@@ -21,9 +27,12 @@ namespace GenerateurDonnee
 
             var CommandCtrl = new CommandController(Context);
             Actions.Add(CommandCtrl);
+            var UsineCtrl = new Usine(Context);
+            Actions.Add(UsineCtrl);
 
             while (true)
             {
+                Date = Date.AddSeconds(1);
                 foreach (var item in Actions)
                 {
                     item.Execute();

@@ -8,9 +8,18 @@ namespace GenerateurDonnee
     {
         private MachineControllerFab controllerFab;
         private MachineControllerCond controllerCond;
+        public projetbiContext Context { get; set; }
+        public Usine(projetbiContext context)
+        {
+            Context = context;
+            controllerFab = new MachineControllerFab(context);
+            controllerCond = new MachineControllerCond(context);
+
+        }
         public void Execute()
         {
-            throw new NotImplementedException();
+            controllerFab.Execute();
+            controllerCond.Execute();
         }
     }
 }

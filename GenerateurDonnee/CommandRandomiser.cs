@@ -8,12 +8,12 @@ namespace GenerateurDonnee
     class CommandRandomiser
     {
         public projetbiContext Context { get; set; }
-        public DateTime Date { get; set; }
         public Commandes GetCommande()
         {
             var Commande = new Commandes()
             {
-                Date = Date
+                Date = Program.Date,
+                Etat = 1
             };
             Commande.Pays = GetPays();
             Commande.LignesCommandes = GetLignesCommandes();
@@ -26,12 +26,15 @@ namespace GenerateurDonnee
             var list = new List<LignesCommande>();
             var random = new Random();
 
-            int max = random.Next(1, 5);
+            int max = random.Next(1, 6);
             for (int i = 0; i < max; i++)
             {
-                var ligne = new LignesCommande();
-                ligne.References = getReference(list);
-                ligne.Quantite = random.Next(5, 20);
+                var ligne = new LignesCommande()
+                {
+                    Etat = 1,
+                    References = getReference(list),
+                    Quantite = random.Next(5, 21)
+                };
                 list.Add(ligne);
             }
 
@@ -41,13 +44,13 @@ namespace GenerateurDonnee
         private References getReference(List<LignesCommande> list)
         {
             var random = new Random();
-            var i = random.Next(1, 2);
+            var i = random.Next(1,3);
             var cond = Context.Conditionnements.Where((x) => x.Id == i).First();
-            i = random.Next(1, Context.Textures.Count());
+            i = random.Next(1, Context.Textures.Count()+1);
             var text = Context.Textures.Where((x) => x.Id == i).First();
-            i = random.Next(1, Context.Variantes.Count());
+            i = random.Next(1, Context.Variantes.Count()+1);
             var variante = Context.Variantes.Where((x) => x.Id == i).First();
-            i = random.Next(1, Context.Couleurs.Count());
+            i = random.Next(1, Context.Couleurs.Count()+1);
             var col = Context.Couleurs.Where((x) => x.Id == i).First();
 
             var prod = GetProduits(list);
@@ -75,7 +78,7 @@ namespace GenerateurDonnee
                 }
             }
             var random = new Random();
-            var y = random.Next(0, listCoef.Count - 1);
+            var y = random.Next(0, listCoef.Count);
             return listProd.Where((x) => x.Id == listCoef[y]).First();
         }
 
@@ -91,7 +94,7 @@ namespace GenerateurDonnee
                 }
             }
             var random = new Random();
-            var y = random.Next(0, listCoef.Count - 1);
+            var y = random.Next(0, listCoef.Count);
             return listPays.Where((x) => x.Id == listCoef[y]).First();
 
 
