@@ -57,17 +57,31 @@ namespace GenerateurDonnee
                                 Chariots.Last().Poids += qte * ligne.IdReferencesNavigation.IdConditionnementsNavigation.PoidsCarton;
                             }
                             qte = ligne.Quantite - qte;
-                            var chariot2 = new Chariot()
+                            do
                             {
-                                Carton = new Cartons(),
-                                Commande = item,
-                                ShoppingList = new Dictionary<int, int>(),
-                                Compteur = 60 * 8
+                                var chariot2 = new Chariot()
+                                {
+                                    Carton = new Cartons(),
+                                    Commande = item,
+                                    ShoppingList = new Dictionary<int, int>(),
+                                    Compteur = 60 * 8
 
-                            };
-                            chariot2.ShoppingList.Add(ligne.IdReferences, qte);
-                            chariot2.Poids += qte * ligne.IdReferencesNavigation.IdConditionnementsNavigation.PoidsCarton;
-                            Chariots.Add(chariot);
+                                };
+                                var qte2 = 0;
+                                if (qte * ligne.IdReferencesNavigation.IdConditionnementsNavigation.PoidsCarton > 200)
+                                {
+                                    qte2 = 200 / ligne.IdReferencesNavigation.IdConditionnementsNavigation.PoidsCarton;
+
+                                }
+                                else
+                                {
+                                    qte2 = qte;
+                                }
+                                chariot2.ShoppingList.Add(ligne.IdReferences, qte2);
+                                chariot2.Poids += qte2 * ligne.IdReferencesNavigation.IdConditionnementsNavigation.PoidsCarton;
+                                Chariots.Add(chariot2);
+                                qte -= qte2;
+                            } while (qte > 0);
                         }
 
 
