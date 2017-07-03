@@ -23,7 +23,7 @@ namespace GenerateurDonnee
                 Context.Add(Commande);
                 Context.SaveChanges();
                 var random = new Random();
-                timer = random.Next(300, 900);
+                timer = random.Next(2400, 3600);
                 //timer = random.Next(30, 120);
                 Console.WriteLine("Commande Effectué à " + Commande.Date + ", " + Commande.LignesCommande.Count + " lignes, prochaine commande dans " + timer +"s");
             }

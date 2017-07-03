@@ -16,6 +16,7 @@ namespace GenerateurDonnee
         public PickingController(projetbiContext context)
         {
             Context = context;
+            Chariots = new List<Chariot>();
         }
         public void Execute()
         {
@@ -24,6 +25,7 @@ namespace GenerateurDonnee
                 Gares = Context.Gares.Include((x) => x.Emplacements).ToList();
                 var listCommandes = Context.Commandes
                 .Include((x) => x.LignesCommande)
+                .ThenInclude((x) => x.IdReferencesNavigation.IdConditionnementsNavigation)
                 .Where((x) => x.Etat == 3).ToList();
                 foreach (var item in listCommandes)
                 {
@@ -70,6 +72,7 @@ namespace GenerateurDonnee
 
 
                     }
+                    item.Etat++;
                 }
                 compteurVerifCommande = 60;
             }
@@ -85,12 +88,14 @@ namespace GenerateurDonnee
                     if (item.InGare)
                     {
                         item.InGare = false;
+                        item.Compteur = 8 * 60;
                     }
                     else
                     {
                         item.IdGares++;
                         if (item.IdGares > Gares.Count)
                         {
+                            item.Carton.IdCommandesNavigation = item.Commande;
                             Context.Cartons.Add(item.Carton);
                             item.Commande.DateExpedition = Program.Date;
                             Console.WriteLine("Carton emballé Commande " + item.Commande.Id);
@@ -100,7 +105,7 @@ namespace GenerateurDonnee
                             if (Chariots.Count((x) => x.IdGares == item.IdGares) <= 7)
                             {
                                 var gare = Gares.Single((x) => x.Id == item.IdGares);
-                                var tmp = item.ShoppingList;
+                                var tmp = item.ShoppingList.ToList();
                                 Console.WriteLine("Carton dans Gare " + gare.Nom + " Commande" + item.Commande.Id);
                                 foreach (var shopping in tmp)
                                 {
