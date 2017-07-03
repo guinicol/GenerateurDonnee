@@ -61,7 +61,7 @@ namespace GenerateurDonnee
         {
             if (Bonbons.Count > 0)
             {
-                if (actualBonbon != null && actualBonbon.Reference.Produits.Equals(Bonbons.First().Reference.Produits))
+                if (actualBonbon != null && actualBonbon.Reference.IdProduitsNavigation.Equals(Bonbons.First().Reference.IdProduitsNavigation))
                 {
                     actualBonbon = Bonbons.First();
                 }
@@ -86,8 +86,8 @@ namespace GenerateurDonnee
             var bonbon = new Bonbon()
             {
                 Commande = item,
-                Reference = item.References,
-                Quantite = item.Quantite*item.References.Conditionnements.Quantite,
+                Reference = item.IdReferencesNavigation,
+                Quantite = item.Quantite*item.IdReferencesNavigation.IdConditionnementsNavigation.Quantite,
                 
             };
             bonbon.Compteur = bonbon.Quantite * 3600 / Cadence;

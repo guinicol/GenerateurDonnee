@@ -78,19 +78,19 @@ namespace GenerateurDonnee
             if (compteurVerifCommande == 0)
             {
                 var lignesCommande = context.LignesCommande
-                .Include((x) => x.References)
-                .Include((x) => x.References.Variantes)
-                .Include((x) => x.References.Conditionnements)
+                .Include((x) => x.IdReferencesNavigation)
+                .Include((x) => x.IdReferencesNavigation.IdVariantesNavigation)
+                .Include((x) => x.IdReferencesNavigation.IdConditionnementsNavigation)
                 .Where((x) => x.Etat == 3).ToList();
                 foreach (var item in lignesCommande)
                 {
                     foreach (var machine in Machines)
                     {
-                        if (!machine.InProduction && machine.Packaging.Equals(item.References.Conditionnements.Nom))
+                        if (!machine.InProduction && machine.Packaging.Equals(item.IdReferencesNavigation.IdConditionnementsNavigation.Nom))
                         {
                             machine.AddPackage(item);
                             item.Etat = 4;
-                            Console.WriteLine("Référence " + item.References.Id + " " + item.References.Conditionnements.Nom + " conditionné dans " + machine.Nom);
+                            Console.WriteLine("Référence " + item.IdReferencesNavigation.Id + " " + item.IdReferencesNavigation.IdConditionnementsNavigation.Nom + " conditionné dans " + machine.Nom);
                             break;
                         }
                     }
@@ -98,11 +98,11 @@ namespace GenerateurDonnee
                     {
                         foreach (var machine in Machines)
                         {
-                            if (machine.Packaging.Equals(item.References.Conditionnements.Nom))
+                            if (machine.Packaging.Equals(item.IdReferencesNavigation.IdConditionnementsNavigation.Nom))
                             {
                                 machine.AddPackage(item);
                                 item.Etat = 4;
-                                Console.WriteLine("Référence " + item.References.Id + " " + item.References.Conditionnements.Nom + " en attente dans " + machine.Nom);
+                                Console.WriteLine("Référence " + item.IdReferencesNavigation.Id + " " + item.IdReferencesNavigation.IdConditionnementsNavigation.Nom + " en attente dans " + machine.Nom);
                                 break;
                             }
                         }
@@ -125,8 +125,8 @@ namespace GenerateurDonnee
         {
             Console.WriteLine("Ligne Commande " + package.Commande.Id + "(Commande "+ package.Commande.IdCommandes+") Reference " + package.Commande.IdReferences + " emballer");
             package.Commande.Etat = 5;
-            var Commandes = context.Commandes.Include((x) => x.LignesCommandes).Where((x) => x.Id == package.Commande.IdCommandes).First();
-            if (!Commandes.LignesCommandes.Any((x) => x.Etat != 5))
+            var Commandes = context.Commandes.Include((x) => x.LignesCommande).Where((x) => x.Id == package.Commande.IdCommandes).First();
+            if (!Commandes.LignesCommande.Any((x) => x.Etat != 5))
             {
                 Commandes.Etat = 3;
                 Commandes.DateProduction = Program.Date;

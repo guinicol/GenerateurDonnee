@@ -3,15 +3,17 @@ using System.Collections.Generic;
 
 namespace GenerateurDonnee
 {
-    public partial class LignesCommande
+    public partial class Cartons
     {
-        public int Id { get; set; }
-        public int Etat { get; set; }
-        public int IdCommandes { get; set; }
-        public int IdReferences { get; set; }
-        public int Quantite { get; set; }
+        public Cartons()
+        {
+            ContenuCartons = new HashSet<ContenuCartons>();
+        }
 
+        public int Id { get; set; }
+        public int IdCommandes { get; set; }
+
+        public virtual ICollection<ContenuCartons> ContenuCartons { get; set; }
         public virtual Commandes IdCommandesNavigation { get; set; }
-        public virtual References IdReferencesNavigation { get; set; }
     }
 }

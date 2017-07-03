@@ -10,5 +10,8 @@ namespace GenerateurDonnee
         public int? IdReferences { get; set; }
         public string Nom { get; set; }
         public int? Quantite { get; set; }
+
+        public virtual Gares IdGaresNavigation { get; set; }
+        public virtual References IdReferencesNavigation { get; set; }
     }
 }

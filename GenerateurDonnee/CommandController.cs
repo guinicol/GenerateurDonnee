@@ -25,7 +25,7 @@ namespace GenerateurDonnee
                 var random = new Random();
                 timer = random.Next(300, 900);
                 //timer = random.Next(30, 120);
-                Console.WriteLine("Commande Effectué à " + Commande.Date + ", " + Commande.LignesCommandes.Count + " lignes, prochaine commande dans " + timer +"s");
+                Console.WriteLine("Commande Effectué à " + Commande.Date + ", " + Commande.LignesCommande.Count + " lignes, prochaine commande dans " + timer +"s");
             }
             timer--;
 

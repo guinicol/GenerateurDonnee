@@ -15,8 +15,8 @@ namespace GenerateurDonnee
                 Date = Program.Date,
                 Etat = 1
             };
-            Commande.Pays = GetPays();
-            Commande.LignesCommandes = GetLignesCommandes();
+            Commande.IdPaysNavigation = GetPays();
+            Commande.LignesCommande = GetLignesCommandes();
 
             return Commande;
         }
@@ -32,7 +32,7 @@ namespace GenerateurDonnee
                 var ligne = new LignesCommande()
                 {
                     Etat = 1,
-                    References = getReference(list),
+                    IdReferencesNavigation = getReference(list),
                     Quantite = random.Next(5, 21)
                 };
                 list.Add(ligne);

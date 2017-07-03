@@ -6,8 +6,10 @@ namespace GenerateurDonnee
 {
     public partial class projetbiContext : DbContext
     {
+        public virtual DbSet<Cartons> Cartons { get; set; }
         public virtual DbSet<Commandes> Commandes { get; set; }
         public virtual DbSet<Conditionnements> Conditionnements { get; set; }
+        public virtual DbSet<ContenuCartons> ContenuCartons { get; set; }
         public virtual DbSet<Couleurs> Couleurs { get; set; }
         public virtual DbSet<Emplacements> Emplacements { get; set; }
         public virtual DbSet<Gares> Gares { get; set; }
@@ -27,15 +29,61 @@ namespace GenerateurDonnee
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Commandes>(entity =>
+            modelBuilder.Entity<Cartons>(entity =>
             {
+                entity.HasIndex(e => e.IdCommandes)
+                    .HasName("idCommandes");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.IdCommandes)
+                    .HasColumnName("idCommandes")
+                    .HasColumnType("int(11)");
+
+                entity.HasOne(d => d.IdCommandesNavigation)
+                    .WithMany(p => p.Cartons)
+                    .HasForeignKey(d => d.IdCommandes)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("Cartons_ibfk_1");
+            });
+
+            modelBuilder.Entity<Commandes>(entity =>
+            {
+                entity.HasIndex(e => e.IdPays)
+                    .HasName("idPays");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DateExpedition)
+                    .HasColumnName("dateExpedition")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DateProduction)
+                    .HasColumnName("dateProduction")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Etat)
+                    .HasColumnName("etat")
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("1");
+
                 entity.Property(e => e.IdPays)
                     .HasColumnName("idPays")
                     .HasColumnType("int(11)");
+
+                entity.HasOne(d => d.IdPaysNavigation)
+                    .WithMany(p => p.Commandes)
+                    .HasForeignKey(d => d.IdPays)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("Commandes_ibfk_1");
             });
 
             modelBuilder.Entity<Conditionnements>(entity =>
@@ -48,6 +96,45 @@ namespace GenerateurDonnee
                     .IsRequired()
                     .HasColumnName("nom")
                     .HasColumnType("varchar(20)");
+
+                entity.Property(e => e.Quantite)
+                    .HasColumnName("quantite")
+                    .HasColumnType("int(11)");
+            });
+
+            modelBuilder.Entity<ContenuCartons>(entity =>
+            {
+                entity.HasIndex(e => e.IdCartons)
+                    .HasName("idCartons");
+
+                entity.HasIndex(e => e.IdReferences)
+                    .HasName("idReferences");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IdCartons)
+                    .HasColumnName("idCartons")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IdReferences)
+                    .HasColumnName("idReferences")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Quantite).HasColumnType("int(11)");
+
+                entity.HasOne(d => d.IdCartonsNavigation)
+                    .WithMany(p => p.ContenuCartons)
+                    .HasForeignKey(d => d.IdCartons)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("ContenuCartons_ibfk_1");
+
+                entity.HasOne(d => d.IdReferencesNavigation)
+                    .WithMany(p => p.ContenuCartons)
+                    .HasForeignKey(d => d.IdReferences)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("ContenuCartons_ibfk_2");
             });
 
             modelBuilder.Entity<Couleurs>(entity =>
@@ -64,6 +151,12 @@ namespace GenerateurDonnee
 
             modelBuilder.Entity<Emplacements>(entity =>
             {
+                entity.HasIndex(e => e.IdGares)
+                    .HasName("idGares");
+
+                entity.HasIndex(e => e.IdReferences)
+                    .HasName("idReferences");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
@@ -84,6 +177,17 @@ namespace GenerateurDonnee
                 entity.Property(e => e.Quantite)
                     .HasColumnName("quantite")
                     .HasColumnType("int(11)");
+
+                entity.HasOne(d => d.IdGaresNavigation)
+                    .WithMany(p => p.Emplacements)
+                    .HasForeignKey(d => d.IdGares)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("Emplacements_ibfk_1");
+
+                entity.HasOne(d => d.IdReferencesNavigation)
+                    .WithMany(p => p.Emplacements)
+                    .HasForeignKey(d => d.IdReferences)
+                    .HasConstraintName("Emplacements_ibfk_2");
             });
 
             modelBuilder.Entity<Gares>(entity =>
@@ -100,9 +204,20 @@ namespace GenerateurDonnee
 
             modelBuilder.Entity<LignesCommande>(entity =>
             {
+                entity.HasIndex(e => e.IdCommandes)
+                    .HasName("idCommandes");
+
+                entity.HasIndex(e => e.IdReferences)
+                    .HasName("idReferences");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
+
+                entity.Property(e => e.Etat)
+                    .HasColumnName("etat")
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("1");
 
                 entity.Property(e => e.IdCommandes)
                     .HasColumnName("idCommandes")
@@ -115,13 +230,33 @@ namespace GenerateurDonnee
                 entity.Property(e => e.Quantite)
                     .HasColumnName("quantite")
                     .HasColumnType("int(11)");
+
+                entity.HasOne(d => d.IdCommandesNavigation)
+                    .WithMany(p => p.LignesCommande)
+                    .HasForeignKey(d => d.IdCommandes)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("LignesCommande_ibfk_2");
+
+                entity.HasOne(d => d.IdReferencesNavigation)
+                    .WithMany(p => p.LignesCommande)
+                    .HasForeignKey(d => d.IdReferences)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("LignesCommande_ibfk_1");
             });
 
             modelBuilder.Entity<Pays>(entity =>
             {
+                entity.HasIndex(e => e.IdTransports)
+                    .HasName("idTransports");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
+
+                entity.Property(e => e.Coef)
+                    .HasColumnName("coef")
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("1");
 
                 entity.Property(e => e.IdTransports)
                     .HasColumnName("idTransports")
@@ -131,6 +266,12 @@ namespace GenerateurDonnee
                     .IsRequired()
                     .HasColumnName("nom")
                     .HasColumnType("varchar(50)");
+
+                entity.HasOne(d => d.IdTransportsNavigation)
+                    .WithMany(p => p.Pays)
+                    .HasForeignKey(d => d.IdTransports)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("Pays_ibfk_1");
             });
 
             modelBuilder.Entity<Produits>(entity =>
@@ -145,6 +286,10 @@ namespace GenerateurDonnee
 
                 entity.Property(e => e.Aromes)
                     .HasColumnName("aromes")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Coef)
+                    .HasColumnName("coef")
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.CountCond)
@@ -179,6 +324,21 @@ namespace GenerateurDonnee
 
             modelBuilder.Entity<References>(entity =>
             {
+                entity.HasIndex(e => e.IdConditionnements)
+                    .HasName("idConditionnements");
+
+                entity.HasIndex(e => e.IdCouleurs)
+                    .HasName("idCouleurs");
+
+                entity.HasIndex(e => e.IdProduits)
+                    .HasName("idProduits");
+
+                entity.HasIndex(e => e.IdTextures)
+                    .HasName("idTextures");
+
+                entity.HasIndex(e => e.IdVariantes)
+                    .HasName("idVariantes");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
@@ -204,6 +364,36 @@ namespace GenerateurDonnee
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.Prix).HasColumnName("prix");
+
+                entity.HasOne(d => d.IdConditionnementsNavigation)
+                    .WithMany(p => p.References)
+                    .HasForeignKey(d => d.IdConditionnements)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("References_ibfk_4");
+
+                entity.HasOne(d => d.IdCouleursNavigation)
+                    .WithMany(p => p.References)
+                    .HasForeignKey(d => d.IdCouleurs)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("References_ibfk_1");
+
+                entity.HasOne(d => d.IdProduitsNavigation)
+                    .WithMany(p => p.References)
+                    .HasForeignKey(d => d.IdProduits)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("References_ibfk_5");
+
+                entity.HasOne(d => d.IdTexturesNavigation)
+                    .WithMany(p => p.References)
+                    .HasForeignKey(d => d.IdTextures)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("References_ibfk_3");
+
+                entity.HasOne(d => d.IdVariantesNavigation)
+                    .WithMany(p => p.References)
+                    .HasForeignKey(d => d.IdVariantes)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("References_ibfk_2");
             });
 
             modelBuilder.Entity<Textures>(entity =>

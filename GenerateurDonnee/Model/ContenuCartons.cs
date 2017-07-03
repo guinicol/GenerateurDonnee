@@ -3,15 +3,14 @@ using System.Collections.Generic;
 
 namespace GenerateurDonnee
 {
-    public partial class LignesCommande
+    public partial class ContenuCartons
     {
         public int Id { get; set; }
-        public int Etat { get; set; }
-        public int IdCommandes { get; set; }
+        public int IdCartons { get; set; }
         public int IdReferences { get; set; }
         public int Quantite { get; set; }
 
-        public virtual Commandes IdCommandesNavigation { get; set; }
+        public virtual Cartons IdCartonsNavigation { get; set; }
         public virtual References IdReferencesNavigation { get; set; }
     }
 }

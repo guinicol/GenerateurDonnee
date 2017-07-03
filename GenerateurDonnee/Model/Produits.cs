@@ -5,9 +5,15 @@ namespace GenerateurDonnee
 {
     public partial class Produits
     {
+        public Produits()
+        {
+            References = new HashSet<References>();
+        }
+
         public int Id { get; set; }
         public int Additifs { get; set; }
         public int Aromes { get; set; }
+        public int Coef { get; set; }
         public int CountCond { get; set; }
         public int CountFab { get; set; }
         public int Enrobages { get; set; }
@@ -16,6 +22,7 @@ namespace GenerateurDonnee
         public int Gelifiants { get; set; }
         public string Nom { get; set; }
         public int Sucre { get; set; }
-        public int Coef { get; set; }
+
+        public virtual ICollection<References> References { get; set; }
     }
 }

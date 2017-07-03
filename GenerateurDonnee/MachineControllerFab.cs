@@ -61,21 +61,21 @@ namespace GenerateurDonnee
             if (compteurVerifCommande == 0)
             {
                 var lignesCommande = context.LignesCommande
-                    .Include((x)=>x.Commandes)
-                    .Include((x) => x.References)
-                    .Include((x) => x.References.Variantes)
-                    .Include((x) => x.References.Conditionnements)
+                    .Include((x)=>x.IdCommandesNavigation)
+                    .Include((x) => x.IdReferencesNavigation)
+                    .Include((x) => x.IdReferencesNavigation.IdVariantesNavigation)
+                    .Include((x) => x.IdReferencesNavigation.IdConditionnementsNavigation)
                     .Where((x) => x.Etat == 1).ToList();
                 foreach (var item in lignesCommande)
                 {
                     foreach (var machine in Machines)
                     {
-                        if (!machine.InProduction && machine.Variante.Equals(item.References.Variantes.Nom))
+                        if (!machine.InProduction && machine.Variante.Equals(item.IdReferencesNavigation.IdVariantesNavigation.Nom))
                         {
                             machine.AddBonbons(item);
                             item.Etat = 2;
-                            item.Commandes.Etat = 2;
-                            Console.WriteLine("Référence " + item.References.Id +" fabriqué dans " + machine.Nom);
+                            item.IdCommandesNavigation.Etat = 2;
+                            Console.WriteLine("Référence " + item.IdReferencesNavigation.Id +" fabriqué dans " + machine.Nom);
                             break;
                         }
                     }
@@ -83,12 +83,12 @@ namespace GenerateurDonnee
                     {
                         foreach (var machine in Machines)
                         {
-                            if (machine.Variante.Equals(item.References.Variantes.Nom))
+                            if (machine.Variante.Equals(item.IdReferencesNavigation.IdVariantesNavigation.Nom))
                             {
                                 machine.AddBonbons(item);
                                 item.Etat = 2;
-                                item.Commandes.Etat = 2;
-                                Console.WriteLine("Référence " + item.References.Id + " en attente dans " + machine.Nom);
+                                item.IdCommandesNavigation.Etat = 2;
+                                Console.WriteLine("Référence " + item.IdReferencesNavigation.Id + " en attente dans " + machine.Nom);
                                 break;
                             }
                         }

@@ -60,7 +60,7 @@ namespace GenerateurDonnee
         {
             if (Packages.Count > 0)
             {
-                if (actualpackage != null && actualpackage.Reference.Produits.Equals(Packages.First().Reference.Produits))
+                if (actualpackage != null && actualpackage.Reference.IdProduitsNavigation.Equals(Packages.First().Reference.IdProduitsNavigation))
                 {
                     actualpackage = Packages.First();
                 }
@@ -84,7 +84,7 @@ namespace GenerateurDonnee
             var package = new Emballage()
             {
                 Commande = item,
-                Reference = item.References,
+                Reference = item.IdReferencesNavigation,
                 Quantite = item.Quantite,
 
             };
