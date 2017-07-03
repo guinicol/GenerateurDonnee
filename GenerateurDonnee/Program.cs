@@ -39,6 +39,8 @@ namespace GenerateurDonnee
             Actions.Add(CommandCtrl);
             var UsineCtrl = new Usine(Context);
             Actions.Add(UsineCtrl);
+            var PickingCtrl = new PickingController(Context);
+            Actions.Add(PickingCtrl);
             while (true)
             {
                 Date = Date.AddSeconds(1);

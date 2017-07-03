@@ -13,6 +13,7 @@ namespace GenerateurDonnee
         public int Id { get; set; }
         public string Nom { get; set; }
         public int Quantite { get; set; }
+        public int PoidsCarton { get; set; }
 
         public virtual ICollection<References> References { get; set; }
     }
