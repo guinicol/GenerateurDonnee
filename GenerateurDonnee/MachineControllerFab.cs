@@ -39,8 +39,8 @@ namespace GenerateurDonnee
             var machine3 = new MachineFab()
             {
                 Nom = "machine3",
-                Cadence = 25,
-                InstallDelay = 625,
+                Cadence = 625,
+                InstallDelay = 25,
                 Variante = "Gélifié"
             };
             machine3.BonbonsProduced += BonbonsProducedHandler;
@@ -48,9 +48,9 @@ namespace GenerateurDonnee
             var machine4 = new MachineFab()
             {
                 Nom = "machine4",
-                Cadence = 25,
-                InstallDelay = 625,
-                Variante = "Gélifié"
+                Cadence = 1230,
+                InstallDelay = 45,
+                Variante = "Sucré"
             };
             machine4.BonbonsProduced += BonbonsProducedHandler;
             Machines.Add(machine4);
@@ -75,7 +75,7 @@ namespace GenerateurDonnee
                             machine.AddBonbons(item);
                             item.Etat = 2;
                             item.Commandes.Etat = 2;
-                            Console.WriteLine("Référence " + item.References.Produits.Nom + " " + item.References.Variantes.Nom + " fabriqué dans " + machine.Nom);
+                            Console.WriteLine("Référence " + item.References.Id +" fabriqué dans " + machine.Nom);
                             break;
                         }
                     }
@@ -88,7 +88,7 @@ namespace GenerateurDonnee
                                 machine.AddBonbons(item);
                                 item.Etat = 2;
                                 item.Commandes.Etat = 2;
-                                Console.WriteLine("Référence " + item.References.Produits.Nom + " " + item.References.Variantes.Nom + " en attente dans " + machine.Nom);
+                                Console.WriteLine("Référence " + item.References.Id + " en attente dans " + machine.Nom);
                                 break;
                             }
                         }
@@ -110,7 +110,7 @@ namespace GenerateurDonnee
 
         private void BonbonsProducedHandler(Bonbon bonbon)
         {
-            Console.WriteLine("Commande " + bonbon.Commande.Id + " Reference " + bonbon.Commande.IdReferences + " produite");
+            Console.WriteLine("Ligne Commande " + bonbon.Commande.Id + "(Commande " + bonbon.Commande.IdCommandes + ") Reference " + bonbon.Commande.IdReferences + " produite");
             bonbon.Commande.Etat = 3;
             context.SaveChanges();
         }

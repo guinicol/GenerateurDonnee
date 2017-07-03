@@ -90,7 +90,7 @@ namespace GenerateurDonnee
                         {
                             machine.AddPackage(item);
                             item.Etat = 4;
-                            Console.WriteLine("Référence " + item.References.Produits.Nom + " " + item.References.Conditionnements.Nom + " conditionné dans " + machine.Nom);
+                            Console.WriteLine("Référence " + item.References.Id + " " + item.References.Conditionnements.Nom + " conditionné dans " + machine.Nom);
                             break;
                         }
                     }
@@ -102,7 +102,7 @@ namespace GenerateurDonnee
                             {
                                 machine.AddPackage(item);
                                 item.Etat = 4;
-                                Console.WriteLine("Référence " + item.References.Produits.Nom + " " + item.References.Conditionnements.Nom + " en attente dans " + machine.Nom);
+                                Console.WriteLine("Référence " + item.References.Id + " " + item.References.Conditionnements.Nom + " en attente dans " + machine.Nom);
                                 break;
                             }
                         }
@@ -123,13 +123,30 @@ namespace GenerateurDonnee
         }
         private void PackageProducedHandler(Emballage package)
         {
-            Console.WriteLine("Commande " + package.Commande.Id + " Reference " + package.Commande.IdReferences + " emballer");
+            Console.WriteLine("Ligne Commande " + package.Commande.Id + "(Commande "+ package.Commande.IdCommandes+") Reference " + package.Commande.IdReferences + " emballer");
             package.Commande.Etat = 5;
             var Commandes = context.Commandes.Include((x) => x.LignesCommandes).Where((x) => x.Id == package.Commande.IdCommandes).First();
             if (!Commandes.LignesCommandes.Any((x) => x.Etat != 5))
             {
                 Commandes.Etat = 3;
                 Commandes.DateProduction = Program.Date;
+                Console.WriteLine("Commande " + Commandes.Id + " terminee");
+            }
+            var emplacements = context.Emplacements.SingleOrDefault((x) => x.IdReferences == package.Reference.Id);
+            if(emplacements != null)
+            {
+                emplacements.Quantite += package.Quantite;
+                Console.WriteLine("Ajout quantite a Emplacement n" + emplacements.Id);
+            }
+            else
+            {
+                var list = context.Emplacements.Where((x) => x.IdReferences == null).ToList();
+                var random = new Random();
+                emplacements = list[random.Next(0,list.Count)];
+                emplacements.IdReferences = package.Reference.Id;
+                emplacements.Quantite = package.Quantite;
+                Console.WriteLine("Ajout quantite et Reference a Emplacement n" + emplacements.Id);
+
             }
             context.SaveChanges();
         }
